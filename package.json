@@ -1,0 +1,19 @@
+{
+  "name": "rn-foundation",
+  "private": true,
+  "scripts": {
+    "dev:ios": "turbo run ios --filter=playground-react-native",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^6.0.0",
+    "prettier": "^3.7.4",
+    "turbo": "^2.7.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.12.1"
+}

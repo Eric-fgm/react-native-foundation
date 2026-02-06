@@ -1,0 +1,38 @@
+{
+  "name": "@rn-foundation/checkbox",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --fix",
+    "clean": "rm -rf dist node_modules .turbo"
+  },
+  "devDependencies": {
+    "@rn-foundation/config": "workspace:*",
+    "@rn-foundation/shared": "workspace:*",
+    "@rn-foundation/checkbox-group": "workspace:*",
+    "@types/react": "catalog:react-native83",
+    "react": "catalog:react-native83",
+    "react-native": "catalog:react-native83",
+    "tsup": "catalog:tsup8",
+    "typescript": "catalog:typescript5"
+  },
+  "peerDependencies": {
+    "react": "catalog:react-native81",
+    "react-native": "catalog:react-native81"
+  },
+  "dependencies": {}
+}
