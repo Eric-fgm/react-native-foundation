@@ -22,7 +22,8 @@
       "@rn-foundation/toggle": ["../../packages/toggle/src/index.ts"],
       "@rn-foundation/toggle-group": ["../../packages/toggle-group/src/index.ts"],
       "@rn-foundation/toast": ["../../packages/toast/src/index.ts"],
-      "@rn-foundation/infinite-list": ["../../packages/infinite-list/src/index.tsx"]
+      "@rn-foundation/infinite-list": ["../../packages/infinite-list/src/index.tsx"],
+      "@rn-foundation/media-uploader": ["../../packages/media-uploader/src/index.ts"]
     },
     "types": ["node", "react", "react-native"]
   }
