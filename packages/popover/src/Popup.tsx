@@ -22,7 +22,7 @@ export interface PopupProps extends PropsWithRender<ViewProps> {
   alignOffset?: number;
   collisionBehavior?: CollisionBehavior;
   collisionOffset?: number;
-  insets?: Partial<Insets>;
+  insets?: Insets;
 }
 
 const Popup = ({

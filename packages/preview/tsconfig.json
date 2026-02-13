@@ -6,6 +6,7 @@
     "strict": true,
     "paths": {
       "@rn-foundation/shared": ["../shared/src/index.ts"],
+      "@rn-foundation/popover": ["../popover/src/index.ts"],
       "@rn-foundation/portal": ["../portal/src/index.ts"]
     }
   }

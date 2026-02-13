@@ -1,30 +1,9 @@
-import { useRootContext as usePopoverContext } from '@rn-foundation/popover';
-import { type PropsWithRender, useRenderElement } from '@rn-foundation/shared';
-import { useCallback } from 'react';
-import { type GestureResponderEvent, Pressable, type PressableProps } from 'react-native';
+import * as Popover from '@rn-foundation/popover';
 
-export interface TriggerProps extends PropsWithRender<PressableProps> {}
+export interface TriggerProps extends Popover.TriggerProps {}
 
-const Trigger = ({ onLongPress, render, ...props }: TriggerProps) => {
-  const { onOpen } = usePopoverContext();
-
-  const handleLongPress = useCallback(
-    (event: GestureResponderEvent) => {
-      onLongPress?.(event);
-      onOpen({
-        x: event.nativeEvent.pageX,
-        y: event.nativeEvent.pageY,
-        width: 0,
-        height: 0,
-      });
-    },
-    [onLongPress, onOpen],
-  );
-
-  return useRenderElement(Pressable, render, {
-    onLongPress: handleLongPress,
-    ...props,
-  });
+const Trigger = ({ withLongPress = true, ...props }: TriggerProps) => {
+  return <Popover.Trigger withLongPress={withLongPress} {...props} />;
 };
 
 Trigger.defaultName = 'MenuTrigger';

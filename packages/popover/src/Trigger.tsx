@@ -9,9 +9,11 @@ import {
 
 import { useRootContext } from './Root/context';
 
-export interface TriggerProps extends PropsWithRender<PressableProps> {}
+export interface TriggerProps extends PropsWithRender<PressableProps> {
+  withLongPress?: boolean;
+}
 
-const Trigger = ({ onPress, render, ...props }: TriggerProps) => {
+const Trigger = ({ onPress, onLongPress, render, withLongPress, ...props }: TriggerProps) => {
   const { onOpen } = useRootContext();
   const ref = useRef<View>(null);
 
@@ -30,9 +32,22 @@ const Trigger = ({ onPress, render, ...props }: TriggerProps) => {
     [onPress, onOpen],
   );
 
+  const handleLongPress = useCallback(
+    (event: GestureResponderEvent) => {
+      onLongPress?.(event);
+      onOpen({
+        x: event.nativeEvent.pageX,
+        y: event.nativeEvent.pageY,
+        width: 0,
+        height: 0,
+      });
+    },
+    [onLongPress, onOpen],
+  );
+
   return useRenderElement(Pressable, render, {
     ref,
-    onPress: handlePress,
+    ...(withLongPress ? { onLongPress: handleLongPress } : { onPress: handlePress }),
     ...props,
   });
 };
