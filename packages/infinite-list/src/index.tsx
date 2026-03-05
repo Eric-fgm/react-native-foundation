@@ -1,5 +1,5 @@
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export interface InfiniteListProps<TItem> extends FlashListProps<TItem> {
@@ -8,6 +8,7 @@ export interface InfiniteListProps<TItem> extends FlashListProps<TItem> {
 
 const InfiniteList = <TItem,>({
   gap = 0,
+  horizontal,
   numColumns = 1,
   drawDistance = 300,
   style,
@@ -20,22 +21,28 @@ const InfiniteList = <TItem,>({
     ({ index, style, ...props }: any) => {
       const cellStyle = {
         paddingHorizontal: gap / 2,
-        paddingTop: index < numColumns ? 0 : gap,
+        paddingTop: horizontal || index < numColumns ? 0 : gap,
       };
       return <View style={[cellStyle, style]} {...props} />;
     },
-    [gap, numColumns],
+    [gap, horizontal, numColumns],
+  );
+
+  const memoizedStyle = useMemo(
+    () => ({
+      marginHorizontal: -gap / 2,
+      ...styles.overflowVisible,
+      ...style,
+    }),
+    [gap, style],
   );
 
   return (
     <FlashList
+      horizontal={horizontal}
       numColumns={numColumns}
       drawDistance={drawDistance}
-      style={{
-        marginHorizontal: -gap / 2,
-        ...styles.overflowVisible,
-        ...style,
-      }}
+      style={memoizedStyle}
       overrideProps={{ style: styles.overflowVisible }}
       contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
       ListHeaderComponentStyle={[{ paddingHorizontal: gap / 2 }, ListHeaderComponentStyle]}

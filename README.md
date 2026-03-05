@@ -31,6 +31,7 @@ A modern, modular React Native component library built with TypeScript. This mon
 | `@rn-foundation/infinite-list`    | Virtualized infinite scrolling list   |
 | `@rn-foundation/popover`          | Floating popover content              |
 | `@rn-foundation/portal`           | Render components outside parent tree |
+| `@rn-foundation/preview`          | Preview component                     |
 | `@rn-foundation/radio-group`      | Radio button group                    |
 | `@rn-foundation/select`           | Select/dropdown input                 |
 | `@rn-foundation/slider`           | Range slider input                    |

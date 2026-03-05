@@ -1,8 +1,9 @@
-import type { Insets } from '@rn-foundation/shared';
 import { createContext, useContext } from 'react';
+import type { View } from 'react-native';
+import type { AnimatedRef } from 'react-native-reanimated';
 
 export interface RootContextProps {
-  insets: Insets;
+  triggerRef: AnimatedRef<View>;
 }
 
 const RootContext = createContext<RootContextProps | null>(null);

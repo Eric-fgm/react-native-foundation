@@ -2,14 +2,13 @@ import InfiniteList from '@rn-foundation/infinite-list';
 import * as Preview from '@rn-foundation/preview';
 import { BlurView } from 'expo-blur';
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 export default function PreviewExample() {
   const [isPreviewOpened, setIsPreviewOpened] = useState(false);
-  const { width: windowWidth } = useWindowDimensions();
   return (
     <InfiniteList
       data={Array.from({ length: 100 }).map((_, i) => i)}
@@ -20,7 +19,7 @@ export default function PreviewExample() {
       scrollsToTop={!isPreviewOpened}
       renderItem={useCallback(
         ({ item }: { item: number }) => (
-          <Preview.Root insets={{ left: 16 }} onOpenedChange={setIsPreviewOpened}>
+          <Preview.Root onOpenedChange={setIsPreviewOpened}>
             <Preview.Trigger style={{ height: 300, backgroundColor: 'lightpink' }} withLongPress>
               <Text>Trigger {item}</Text>
             </Preview.Trigger>
@@ -33,12 +32,11 @@ export default function PreviewExample() {
                 pointerEvents="none"
               />
               <Preview.Popup
+                insets={{ left: 16, top: 54 }}
                 style={{
-                  width: windowWidth - 32,
-                  height: 450,
                   backgroundColor: 'lightpink',
                 }}>
-                <Text>Popup {item}</Text>
+                <Text>Trigger {item}</Text>
               </Preview.Popup>
             </Preview.Overlay>
           </Preview.Root>

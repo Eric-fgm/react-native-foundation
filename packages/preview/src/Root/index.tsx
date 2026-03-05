@@ -1,21 +1,22 @@
 import * as Popover from '@rn-foundation/popover';
-import type { Insets } from '@rn-foundation/shared';
 import { useMemo } from 'react';
+import type { View } from 'react-native';
+import { useAnimatedRef } from 'react-native-reanimated';
 
 import RootContext from './context';
 
-export interface RootProps extends Popover.RootProps {
-  insets?: Insets;
-}
+export interface RootProps extends Popover.RootProps {}
 
-const Root = ({ insets = {}, ...props }: RootProps) => {
+const Root = (props: RootProps) => {
+  const triggerRef = useAnimatedRef<View>();
+
   return (
     <RootContext.Provider
       value={useMemo(
         () => ({
-          insets,
+          triggerRef,
         }),
-        [insets],
+        [triggerRef],
       )}>
       <Popover.Root {...props} />
     </RootContext.Provider>
