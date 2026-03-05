@@ -11,7 +11,7 @@
       "@rn-foundation/theming": ["../../packages/theming/src/index.ts"],
       "@rn-foundation/aspect-ratio": ["../../packages/aspect-ratio/src/index.ts"],
       "@rn-foundation/popover": ["../../packages/popover/src/index.ts"],
-      "@rn-foundation/portal": ["../../packages/portal/src/index.ts"],
+      "@rn-foundation/portal": ["../../packages/portal/src/index.tsx"],
       "@rn-foundation/dialog": ["../../packages/dialog/src/index.ts"],
       "@rn-foundation/context-menu": ["../../packages/context-menu/src/index.ts"],
       "@rn-foundation/dropdown-menu": ["../../packages/dropdown-menu/src/index.ts"],

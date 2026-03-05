@@ -255,9 +255,6 @@ const useAnchoredPosition = ({
     }
     return {
       opacity: 0,
-      width: 0,
-      height: 0,
-      zIndex: -9999,
     };
   }, [
     anchorMeasurement,

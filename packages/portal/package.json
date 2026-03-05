@@ -33,6 +33,6 @@
     "react-native": "catalog:react-native81"
   },
   "dependencies": {
-    "@gorhom/portal": "^1.0.14"
+    "react-native-teleport": "^1.0.2"
   }
 }

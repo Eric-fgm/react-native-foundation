@@ -1,3 +1,4 @@
+import { Portal } from '@rn-foundation/portal';
 import { type PropsWithRender, useRenderElement } from '@rn-foundation/shared';
 import { useCallback } from 'react';
 import {
@@ -7,8 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { useRootContext } from '../Root/context';
-import Portal from './Portal';
+import { useRootContext } from './Root/context';
 
 export interface OverlayProps extends PropsWithRender<PressableProps> {
   closeOnPress?: boolean;
