@@ -1,87 +1,107 @@
 import { nanoid } from 'nanoid/non-secure';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import BatchProcessor from './batch/batch-processor';
 import MediaUploaderContext from './context';
-import { createMediaUploaderStore } from './create-store';
-import { useMediaUploaderQueue } from './hooks';
-import type { UploadBatch, UploadItem, UploadItemData } from './types';
+import type { Batch, BatchItem, BatchStore } from './types';
 
-export type MediaUploaderOrchestratorProps<T extends UploadItemData> = React.PropsWithChildren<{
-  storeName?: string;
-  uploadBatchFn?: (batch: UploadBatch<T>, signal: AbortController) => Promise<void>;
+export type MediaUploaderOrchestratorProps<
+  TBatchData extends unknown,
+  TBatchItemData extends unknown,
+> = React.PropsWithChildren<{
+  store: BatchStore<TBatchData, TBatchItemData>;
+  uploadBatchFn?: (batch: Batch<TBatchData, TBatchItemData>) => Promise<unknown>;
   uploadBatchItemFn?: (
-    item: UploadItem<T>,
-    batch: UploadBatch<T>,
-    signal: AbortController,
-  ) => Promise<void>;
-  addBatchFn?: (batch: UploadBatch<T>, signal: AbortController) => Promise<void>;
-  onBatchCompleted?: (batch: UploadBatch<T>) => void;
-  onComplete?: (batches: UploadBatch<T>[]) => void;
+    item: BatchItem<TBatchItemData>,
+    index: number,
+    batch: Batch<TBatchData, TBatchItemData>,
+  ) => Promise<unknown>;
+  addBatchFn?: (batch: Batch<TBatchData, TBatchItemData>) => Promise<unknown>;
+  onBatchComplete?: (batch: Batch<TBatchData, TBatchItemData>) => void;
+  onComplete?: (batches: Batch<TBatchData, TBatchItemData>[]) => void;
 }>;
 
-const MediaUploaderOrchestrator = <T extends UploadItemData>({
+const MediaUploaderOrchestrator = <TBatchData extends unknown, TBatchItemData extends unknown>({
   children,
-  storeName = 'media-uploader',
+  store,
   uploadBatchFn,
   uploadBatchItemFn,
   addBatchFn,
-  onBatchCompleted,
+  onBatchComplete,
   onComplete,
-}: MediaUploaderOrchestratorProps<T>) => {
-  const store = useRef(createMediaUploaderStore<T>(storeName)).current();
-  const abortControllerList = useRef<AbortController[]>([]);
-  const { batches, addBatch, reset } = store;
+}: MediaUploaderOrchestratorProps<TBatchData, TBatchItemData>) => {
+  const batchProcessor = useRef<BatchProcessor<TBatchData, TBatchItemData>>(null);
 
-  const registerSignal = () => {
-    const controller = new AbortController();
-    abortControllerList.current.push(controller);
-    return controller;
-  };
+  useEffect(() => {
+    if (!store.hasHydrated) return;
+    const processor = new BatchProcessor({
+      store,
+      onBatchStart: uploadBatchFn,
+      onItemProcess: uploadBatchItemFn,
+      onBatchEnd: addBatchFn,
+      onBatchComplete: onBatchComplete,
+      onComplete: onComplete,
+    });
+    batchProcessor.current = processor;
 
-  const abortAllSignals = useCallback(() => {
-    abortControllerList.current.forEach((controller) => controller.abort());
-    abortControllerList.current = [];
-  }, []);
-
-  useMediaUploaderQueue({
-    store,
-    uploadBatchFn,
-    uploadBatchItemFn,
-    addBatchFn,
-    onBatchCompleted,
-    onComplete,
-    registerSignal,
-    abortAllSignals,
-  });
+    return () => processor.cancel();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.hasHydrated]);
 
   const batchesItems = useMemo(() => {
-    return batches.flatMap((batch) => batch.items);
-  }, [batches]);
+    return store.batches.flatMap((batch) => batch.items);
+  }, [store.batches]);
 
   const uploadBatch = useCallback(
-    (items: T[]) => {
-      addBatch({
+    (items: TBatchItemData[], scope?: string) => {
+      batchProcessor.current?.add({
         id: nanoid(),
+        scope,
+        status: 'pending',
+        isPaused: false,
         items: items.map((item) => ({
           id: nanoid(),
-          data: item,
           status: 'pending',
+          data: item,
         })),
       });
     },
-    [addBatch],
+    [batchProcessor],
   );
 
-  const cancelUpload = useCallback(() => {
-    abortAllSignals();
-    reset();
-  }, [abortAllSignals, reset]);
+  const cancelUpload = useCallback(
+    (scope?: string) => {
+      batchProcessor.current?.cancel(scope);
+    },
+    [batchProcessor],
+  );
+
+  const pauseUpload = useCallback(
+    (scope?: string) => {
+      batchProcessor.current?.pause(scope);
+    },
+    [batchProcessor],
+  );
+
+  const resumeUpload = useCallback(
+    (scope?: string) => {
+      batchProcessor.current?.resume(scope);
+    },
+    [batchProcessor],
+  );
 
   return (
     <MediaUploaderContext.Provider
       value={useMemo(
-        () => ({ batches, batchesItems, uploadBatch, cancelUpload }),
-        [batches, batchesItems, uploadBatch, cancelUpload],
+        () => ({
+          batches: store.batches,
+          batchesItems,
+          uploadBatch,
+          cancelUpload,
+          pauseUpload,
+          resumeUpload,
+        }),
+        [store.batches, batchesItems, uploadBatch, cancelUpload, pauseUpload, resumeUpload],
       )}>
       {children}
     </MediaUploaderContext.Provider>

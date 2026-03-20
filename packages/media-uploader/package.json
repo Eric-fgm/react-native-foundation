@@ -9,6 +9,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./stores/async-storage": {
+      "import": "./dist/stores/async-storage.mjs",
+      "require": "./dist/stores/async-storage.js",
+      "types": "./dist/stores/async-storage.d.ts"
     }
   },
   "files": [
